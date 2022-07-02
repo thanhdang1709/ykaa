@@ -16,9 +16,7 @@ class BalanceService extends HttpService {
       body: {
         'account': box.read('account') ?? '',
         'password': box.read('password') ?? '',
-        'pwMD5': md5
-            .convert(utf8.encode(box.read('password') + 'youngerx'))
-            .toString(),
+        'pwMD5': md5.convert(utf8.encode(box.read('password') + 'youngerx')).toString(),
         "token": generateTokenMd5(timestamp),
         "timestamp": timestamp,
         "key": box.read('androidId') ?? '',
@@ -46,6 +44,30 @@ class BalanceService extends HttpService {
       return null;
     } else {
       return (res.body.toString().replaceAll('\n', '|')).split('|');
+    }
+  }
+
+  Future withdraw({
+    Map<String, dynamic> data,
+  }) async {
+    print(md5.convert(utf8.encode(box.read('password') + 'youngerx')).toString());
+    final res = await fetch(
+      url: '/AdminCheck.php',
+      method: POST,
+      body: {
+        "account": box.read('account'),
+        "password": box.read('password'),
+        "pwMD5": md5.convert(utf8.encode(box.read('password') + 'youngerx')).toString(),
+        "key": box.read('androidId'),
+        "bank": data['payment'],
+        "money": data['amount'],
+      },
+    );
+
+    if ([res.isConnectError, res.isResponseError].contains(true)) {
+      return null;
+    } else {
+      return res.body;
     }
   }
 }

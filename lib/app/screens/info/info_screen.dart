@@ -9,202 +9,232 @@ import 'package:ykapay/utils/fade_in.dart';
 import 'package:ykapay/utils/number.dart';
 import 'package:ykapay/utils/smart_refresher_success.dart';
 import 'package:ykapay/utils/text_input.dart';
-import './../../../app/controllers/charge_controller.dart';
 
 class InfoScreen extends GetView<InfoController> {
   @override
   Widget build(BuildContext context) {
     InfoController controller = Get.put(InfoController());
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        header: SmartRefresherSuccess(
-          message: 'common.reload_success'.tr,
-        ),
-        controller: controller.refreshController,
-        onRefresh: controller.onRefresh,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: Get.height * .03,
-              ),
-              FadeIn(
-                delay: 0.3,
-                child: Row(
-                  children: [
-                    Text(
-                      'Tên tài khoản:',
-                      style: Palette.textStyle().copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: false,
+          header: SmartRefresherSuccess(
+            message: 'common.reload_success'.tr,
+          ),
+          controller: controller.refreshController,
+          onRefresh: controller.onRefresh,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: Get.height * .03,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.6,
-                child: MyTextInput(
-                  iconData: Icons.account_balance,
-                  controller: controller.accountController,
-                  hintText: controller.box.read('account') ?? 'dangcao',
-                  background: Colors.white,
-                  textInputType: TextInputType.text,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.5,
-                child: Row(
-                  children: [
-                    Text(
-                      'ATM:',
-                      style: Palette.textStyle().copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.6,
-                child: MyTextInput(
-                  iconData: Icons.atm,
-                  controller: controller.atmController,
-                  hintText: 'Số tài khoản ATM',
-                  background: Colors.white,
-                  textInputType: TextInputType.number,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.5,
-                child: Row(
-                  children: [
-                    Text(
-                      'MoMo:',
-                      style: Palette.textStyle().copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.6,
-                child: MyTextInput(
-                  controller: controller.momoController,
-                  iconData: Icons.attach_money,
-                  hintText: 'Số điện thoại MoMo',
-                  background: Colors.white,
-                  textInputType: TextInputType.number,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.5,
-                child: Row(
-                  children: [
-                    Text(
-                      'ZaloPay:',
-                      style: Palette.textStyle().copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FadeIn(
-                delay: 0.6,
-                child: MyTextInput(
-                  controller: controller.zaloController,
-                  iconData: Icons.attach_money,
-                  hintText: 'Số điện thoại Zalo',
-                  background: Colors.white,
-                  textInputType: TextInputType.number,
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              FadeIn(
-                delay: 0.7,
-                child: MyButtonSubmit(
-                  backgroundColor: Colors.blueAccent,
-                  label: 'common.saveInfo'.tr,
-                  onPressed: () {},
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Đổi mật khẩu',
-                    style: Palette.textStyle().copyWith(fontSize: 20, color: Colors.blue),
+                FadeIn(
+                  delay: 0.3,
+                  child: Row(
+                    children: [
+                      Text(
+                        'Tên tài khoản:',
+                        style: Palette.textStyle().copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                child: Text(
-                  "v" + controller.version ?? '',
-                  style: Palette.textStyle().copyWith(fontSize: 12, color: Colors.grey),
                 ),
-              ),
-              InkWell(
-                onTap: () {
-                  GetStorage().erase();
-                  Get.offAllNamed('login');
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.exit_to_app,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Đăng xuất',
-                      style: Palette.textStyle().copyWith(fontSize: 20, color: Colors.red),
-                    ),
-                  ],
+                SizedBox(
+                  height: 10,
                 ),
-              )
-            ],
+                FadeIn(
+                  delay: 0.6,
+                  child: MyTextInput(
+                    readOnly: true,
+                    iconData: Icons.account_balance,
+                    controller: controller.accountController,
+                    hintText: controller.box.read('account') ?? 'dangcao',
+                    background: Colors.white,
+                    textInputType: TextInputType.text,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                FadeIn(
+                  delay: 0.5,
+                  child: Row(
+                    children: [
+                      Text(
+                        'ATM:',
+                        style: Palette.textStyle().copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                FadeIn(
+                  delay: 0.6,
+                  child: MyTextInput(
+                    iconData: Icons.atm,
+                    controller: controller.atmController,
+                    hintText: 'Số tài khoản ATM',
+                    background: Colors.white,
+                    textInputType: TextInputType.number,
+                    rules: {
+                      'required': 'Vui lòng nhập số tài khoản ATM',
+                    },
+                    validateCallback: (value) {
+                      controller.isValidateATM.value = value;
+                      controller.formValidate();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                FadeIn(
+                  delay: 0.5,
+                  child: Row(
+                    children: [
+                      Text(
+                        'MoMo:',
+                        style: Palette.textStyle().copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                FadeIn(
+                  delay: 0.6,
+                  child: MyTextInput(
+                    controller: controller.momoController,
+                    iconData: Icons.attach_money,
+                    hintText: 'Số điện thoại MoMo',
+                    background: Colors.white,
+                    textInputType: TextInputType.number,
+                    rules: {
+                      'phone': true,
+                      'required': 'Vui lòng nhập số điện thoại',
+                    },
+                    validateCallback: (value) {
+                      controller.isValidateMoMo.value = value;
+                      controller.formValidate();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                FadeIn(
+                  delay: 0.5,
+                  child: Row(
+                    children: [
+                      Text(
+                        'ZaloPay:',
+                        style: Palette.textStyle().copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                FadeIn(
+                  delay: 0.6,
+                  child: MyTextInput(
+                    controller: controller.zaloController,
+                    iconData: Icons.attach_money,
+                    hintText: 'Số điện thoại Zalo',
+                    background: Colors.white,
+                    textInputType: TextInputType.number,
+                    rules: {
+                      'phone': true,
+                      'required': 'Vui lòng nhập số điện thoại',
+                    },
+                    validateCallback: (value) {
+                      controller.isValidateZaloPay.value = value;
+                      controller.formValidate();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                FadeIn(
+                  delay: 0.7,
+                  child: MyButtonSubmit(
+                    backgroundColor: Colors.blueAccent,
+                    label: 'common.saveInfo'.tr,
+                    onPressed: () {
+                      controller.submitButton();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Text(
+                //       'Đổi mật khẩu',
+                //       style: Palette.textStyle().copyWith(fontSize: 20, color: Colors.blue),
+                //     ),
+                //   ],
+                // ),
+                // SizedBox(
+                //   height: 20,
+                // ),
+                Center(
+                  child: Text(
+                    "v" + controller.version ?? '',
+                    style: Palette.textStyle().copyWith(fontSize: 12, color: Colors.grey),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    GetStorage().erase();
+                    Get.offAllNamed('login');
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.exit_to_app,
+                        color: Colors.red,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Đăng xuất',
+                        style: Palette.textStyle().copyWith(fontSize: 20, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

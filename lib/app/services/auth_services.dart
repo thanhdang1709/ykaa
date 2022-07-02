@@ -15,8 +15,7 @@ class AuthService extends HttpService {
       body: {
         'account': data['username'],
         'password': data['password'],
-        'pwMD5':
-            md5.convert(utf8.encode(data['password'] + 'youngerx')).toString(),
+        'pwMD5': md5.convert(utf8.encode(data['password'] + 'youngerx')).toString(),
       },
     );
 
@@ -74,10 +73,7 @@ class AuthService extends HttpService {
   }
 
   Future<bool> refreshInfo() async {
-    Map<String, String> data = {
-      'username': box.read('account'),
-      'password': box.read('password')
-    };
+    Map<String, String> data = {'username': box.read('account'), 'password': box.read('password')};
     var response = await AuthService().login(data: data);
     if (response != null && response['error'] == 0) {
       box.write('account', box.read('account'));
@@ -90,6 +86,29 @@ class AuthService extends HttpService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future updateInfo({
+    Map<String, dynamic> data,
+  }) async {
+    print(md5.convert(utf8.encode(box.read('password') + 'youngerx')).toString());
+    final res = await fetch(
+      url: '/Info.php',
+      method: POST,
+      body: {
+        "account": box.read('account'),
+        "password": box.read('password'),
+        "pwMD5": md5.convert(utf8.encode(box.read('password') + 'youngerx')).toString(),
+        "atm": data['atm'],
+        "momo": data['momo'],
+        "zalo": data['zalo'],
+      },
+    );
+    if ([res.isConnectError, res.isResponseError].contains(true)) {
+      return null;
+    } else {
+      return res.body;
     }
   }
 }

@@ -18,6 +18,7 @@ class MyTextInput extends StatefulWidget {
     this.borderColor,
     this.radius = 10.0,
     this.onTap,
+    this.readOnly,
   }) : super(key: key);
   final String hintText;
   final IconData iconData;
@@ -31,6 +32,7 @@ class MyTextInput extends StatefulWidget {
   final Color borderColor;
   final double radius;
   final Function onTap;
+  final bool readOnly;
   //final bool isEnable;
 
   @override
@@ -52,6 +54,7 @@ class _TextInputState extends State<MyTextInput> {
       valueListenable: hidePasswordNotifier,
       builder: (context, value, child) {
         return TextFormField(
+          readOnly: widget.readOnly ?? false,
           onTap: widget.onTap ?? () {},
           controller: widget.controller,
           keyboardType: widget.textInputType,
@@ -134,6 +137,32 @@ String validate({
           if (k == 'minLength') {
             if (controller.text.length < v) {
               errorMessage = 'Tối thiểu $v ký tự';
+            } else {
+              errorMessage = '';
+            }
+          }
+        },
+      );
+    }
+    if (rules.containsKey('minAmount') && errorMessage == '') {
+      rules.forEach(
+        (k, v) {
+          if (k == 'minAmount') {
+            if (int.parse(controller.text) < v) {
+              errorMessage = 'Tối đa $v đ';
+            } else {
+              errorMessage = '';
+            }
+          }
+        },
+      );
+    }
+    if (rules.containsKey('maxAmount') && errorMessage == '') {
+      rules.forEach(
+        (k, v) {
+          if (k == 'maxAmount') {
+            if (int.parse(controller.text) > v) {
+              errorMessage = 'Tối thiểu $v đ';
             } else {
               errorMessage = '';
             }

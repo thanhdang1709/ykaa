@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,18 +62,50 @@ class WithdrawScreen extends GetView<WithdrawController> {
                 child: Container(
                   height: 50,
                   width: Get.width,
-                  child: DropdownSearch<String>(
-                    // searchBoxController: TextEditingController(text: ''),
-                    //searchBoxDecoration: InputDecoration(border: InputBorder.none),
-                    mode: Mode.MENU,
-                    items: ['MoMo', 'ZaloPay', 'ATM'],
-                    isFilteredOnline: true,
-                    // showSelectedItem: false,
-                    // int: 'common.payment_method'.tr,
-                    //showSearchBox: true,
-                    itemAsString: (u) => u,
-                    onChanged: (e) {},
-                    // dropDownButton: Container()
+                  child: DropdownButtonFormField2<StatusModel>(
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    isExpanded: true,
+                    // hint: Text(
+                    //   // 'status'.tr,
+                    //   style: TextStyle(fontSize: 14),
+                    // ),
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.black45,
+                    ),
+                    iconSize: 30,
+                    buttonHeight: 60,
+                    buttonPadding: const EdgeInsets.only(left: 20, right: 10),
+                    dropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    // items: controller.status.map((e) => )
+                    items: controller.status
+                        .map((item) => DropdownMenuItem<StatusModel>(
+                              value: item,
+                              child: Text(
+                                '${item.label}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      //Do something when changing the item if you want.
+                      controller.isStatus?.value = value.status;
+                      controller.payment(value.id);
+                      // print(value.status);
+                    },
+                    onSaved: (value) {
+                      controller.selectedPayment?.value = value.toString();
+                    },
                   ),
                 ),
               ),
@@ -98,11 +131,24 @@ class WithdrawScreen extends GetView<WithdrawController> {
               ),
               FadeIn(
                 delay: 0.6,
-                child: MyTextInput(
-                  iconData: Icons.money_sharp,
-                  hintText: 'Nhập số dư của bạn',
-                  background: Colors.white,
-                  textInputType: TextInputType.number,
+                child: Obx(
+                  () => controller.isSubmitting.value
+                      ? CircularProgressIndicator()
+                      : MyTextInput(
+                          controller: controller.amountController,
+                          iconData: Icons.money_sharp,
+                          hintText: 'Nhập số dư của bạn',
+                          background: Colors.white,
+                          textInputType: TextInputType.number,
+                          rules: {
+                            'maxAmount': controller.balance.value,
+                            'minAmount': 50000,
+                          },
+                          validateCallback: (value) {
+                            controller.isValidateAmount.value = value;
+                            controller.formValidate();
+                          },
+                        ),
                 ),
               ),
               SizedBox(
@@ -113,7 +159,9 @@ class WithdrawScreen extends GetView<WithdrawController> {
                 child: MyButtonSubmit(
                   backgroundColor: Colors.blueAccent,
                   label: 'common.withdraw'.tr,
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.submitButton();
+                  },
                 ),
               )
             ],
@@ -161,8 +209,7 @@ class BalanceContainer extends StatelessWidget {
             children: [
               Text(
                 "${'common.balance'.tr}: ",
-                style: Palette.textStyle()
-                    .copyWith(color: Colors.white, fontSize: 25),
+                style: Palette.textStyle().copyWith(color: Colors.white, fontSize: 25),
               ),
             ],
           ),
@@ -173,10 +220,7 @@ class BalanceContainer extends StatelessWidget {
             children: [
               Text(
                 "${$Number.numberFormat(balance)} Ycoin",
-                style: Palette.textStyle().copyWith(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
+                style: Palette.textStyle().copyWith(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -233,17 +277,11 @@ class ItemChargeContainer extends StatelessWidget {
               Spacer(),
               Text(
                 "${$Number.numberFormat(balance)}",
-                style: Palette.textStyle().copyWith(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
+                style: Palette.textStyle().copyWith(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
               ),
               Text(
                 "  Ycoin",
-                style: Palette.textStyle().copyWith(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold),
+                style: Palette.textStyle().copyWith(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ],
           ),
